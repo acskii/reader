@@ -43,4 +43,22 @@ class Extractor:
             print(f"NO RESPONSE TO LOAD DOCUMENT FROM")
             return None
 
+class InfoNode:
+    def __init__(self, info: list = []):
+        self.content = info
     
+    @property
+    def info(self):
+        if len(self.content) < 3:
+            return ' '.join(self.content)
+        else:
+            return f"{self.content[0]} {', '.join(self.content[1:])}"
+
+class ChapterNode:
+    def __init__(self, chapter_link: str, chapter_header: str):
+        self.link = chapter_link
+        self.header = chapter_header
+    
+    @property
+    def result(self):
+        return (self.header, self.link)
