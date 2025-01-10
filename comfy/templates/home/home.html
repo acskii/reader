@@ -4,6 +4,41 @@
         <a class="nav-link active link-light" aria-current="page" href="/snatch">Snatch</a>
     </li> -->
 {% endblock %}
+
+{% block styles %}
+<style>
+    hr {
+        opacity: 1;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<h1>Welcome {{user.username}}!</h1>
+<div class="container mt-3 p-2">
+    <h4 class="m-0">Collections</h4>
+    <hr class="m-0 border border-info border-2 bg-info">
+</div>
+
+<div class="container mt-3 p-2">
+    <form name="home-extract" method="POST">
+        {% csrf_token %}
+        <h4 class="m-0">Already found your favourite series?</h4>
+        <div class="container p-3 border-info border-3 border">
+            <h5>Paste URL here: </h5>
+            <fieldset>
+                <div class="input-group mb-3">
+                    <input required type="text" class="form-control border border-info border-2 border-end-0"
+                        aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" name="url"
+                        placeholder="Series page url">
+                    <button type="submit" id="extract-button" class="btn btn-info input-group-text" name="home-extract-form">
+                        <strong style="color: #ffffff;">Extract</strong>
+                    </button>
+                </div>
+                {% if error %}
+                <span style="color: #ff0000;">{{ error }}</span>
+                {% endif %}
+            </fieldset>
+        </div>
+    </form>
+</div>
 {% endblock %}
