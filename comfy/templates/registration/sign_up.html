@@ -1,0 +1,21 @@
+{% extends 'reader/base.html' %}
+{% block title %}Sign Up{% endblock %}
+{% load crispy_forms_tags %}
+{% block navbarContent %}
+    <li class="nav-item">
+        <a class="nav-link active link-light" aria-current="page" href="{% url 'login' %}">Log in</a>
+    </li>
+{% endblock %}
+{% block content %}
+<h3 class="text-center mx-auto mt-3">Create new account</h3>
+<div class="container mx-auto w-50 mt-3 border border-3 border-info rounded p-3">
+    <form method="POST">
+        {% csrf_token %}{{ form|crispy }}
+        <br>
+        <div class="w-50 d-grid gap-2 col-6 mx-auto text-center">
+            <span style="font-size: 0.8em;"><em>Already have account? <a href="{% url 'login' %}">login!</a></em></span>
+            <button type="submit" class="btn btn-success">Sign Up</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
