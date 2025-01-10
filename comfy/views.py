@@ -59,6 +59,12 @@ async def extract_view(request):
             results = await cached_scape(scrape_info, username, option, url)
 
             if results is not None:
+                # Cache chapter list for future preview use
+                chapters = results.chapters
+
+                await cache.aset('current_chapter_list', chapters, timeout=CACHE_TIMEOUT)
+
+                # return rendered template
                 return await sync_to_async(render)(request, 'series/series.html', {'results': results})
         
         # redirect to error page soon
