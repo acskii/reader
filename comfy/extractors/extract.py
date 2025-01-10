@@ -8,6 +8,7 @@ Returns Extractor instance of chosen extractor.
 """
 
 from .classes import *
+import re
 
 # WEBSITE OPTION // REGEX
 supported_websites = {
@@ -28,7 +29,15 @@ supported_websites = {
     # },
 }
 
-def get_extractor(website_option:str):
+def determine_option(url: str):
+    """Get option number based on supported websites, None if not found"""
+    for option, info in supported_websites.items():
+        if re.match(info['url_pattern'], url.strip()):
+            return option
+
+    return None
+
+def get_extractor(website_option: str):
     """Get extractor class of a website according to option number"""
     website_option = str(website_option)
 
