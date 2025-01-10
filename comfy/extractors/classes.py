@@ -6,8 +6,8 @@ An extractor class may not function if the website associated has changed its la
 """
 
 import re
-from .utils.base import Extractor
-from .utils.containers import *
+from ..utils.base import Extractor
+from ..utils.containers import *
 
 TIMEOUT = 3         # Seconds to wait for request response
 REQUEST_HEADERS = {
