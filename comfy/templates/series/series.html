@@ -1,0 +1,103 @@
+{% extends 'reader/base.html' %}
+{% load static %}
+{% block title %}Series Viewer{% endblock %}
+{% block styles %}
+    <style>
+        .box {
+            background-color: rgb(236, 242, 248);
+            min-width: 500px;
+        }
+    </style>
+{% endblock %}
+{% block scripts %}
+  <script src="{% static 'core/js/index.js' %}"></script>
+{% endblock %}
+{% block content %}
+<h2 class="text-center mt-3">Series</h2>
+{% if results %}
+<div class="container-fluid ms-auto me-auto">
+<div class="row-md-6">
+<div class="container border border-info border-3 rounded p-4 w-75 box">
+  <div class="row">
+    <img
+    class="rounded col-6 img-fluid"
+    style="width: 24%; min-width: 180px; height: 90%"
+    type="image"
+    alt="thumbnail"
+    src="{{ results.thumbnail }}"
+    />
+    <div class="col text-wrap m-0">
+      <div class="row">
+        <div class="badge text-bg-info col ms-2 p-1 ps-0">
+          <img
+          class="img-fluid bg-light border-2 rounded"
+          style="min-width: 1.5em; max-width: 1.8em;"
+          type="image"
+          alt="logo"
+          src="{{ results.website_icon }}"
+          />
+          <span>{{ results.website }}</span>
+        </div>
+      </div>
+      <div class="row p-2">
+        <h3>{{ results.title }}</h3>
+        <hr class="bg-info" style="height: 3px" />
+        {% for info in results.info %}
+          <p class="m-0">{{ info }}</p>
+        {% endfor %}
+        <hr class="bg-info mt-3" style="height: 3px" />
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container border border-info border-3 rounded p-4 mt-3 w-75 box">
+  <div class="row">
+    <div class="col text-wrap m-0">
+      <div class="row">
+        <h3 class="m-0">Summary</h3>
+        <hr class="bg-info" style="height: 3px" />
+      </div>
+      <div class="row p-2">
+        <pre class="m-0" style="white-space: pre-wrap;">{{ results.summary }}</pre>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container border border-info border-3 rounded p-4 mt-3 w-75 box">
+  <div class="row">
+    <div class="col text-wrap m-0">
+      <div class="row">
+        <h3 class="m-0">Chapters</h3>
+        <hr class="bg-info" style="height: 3px" />
+      </div>
+      <div class="row p-2 overflow-auto text-center justify-content-center" style="max-height: 300px;">
+        {% for chapter in results.chapters %}
+          <div class="border border-3 border-info row text-wrap mb-1 mx-auto p-1">
+            <span class="col-6 mb-2">
+              <strong>{{ chapter.header }}</strong>
+            </span>
+            <div class="col-6">
+              <form method="post">
+                {% csrf_token %}
+                <button
+                  type="submit"
+                  name="preview_url"
+                  value="{{ chapter.link }}"
+                  class="btn btn-outline-info"
+                  >
+                  Preview
+                </button>
+              </form>
+<!--              <button type="button" class="btn btn-outline-info">-->
+<!--              Download-->
+<!--              </button>-->
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+{% endif %}
+{% endblock %}
