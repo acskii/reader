@@ -5,6 +5,13 @@ It is heavily based on parsing through HTML and JavaScript to scrape data.
 An extractor class may not function if the website associated has changed its layout.
 """
 
+#
+#
+#   STANTARDISE URLS IN EXTRACTOR
+#
+#
+
+
 import re
 from ..utils.base import Extractor
 from ..utils.containers import *
@@ -27,7 +34,7 @@ class BatoExtractor(Extractor):
         self.logo = 'https://bato.to/amsta/img/batoto/favicon.ico?v0'
 
     def last_search_page(self, url):
-        document = self.load_document(self.load_response(url))
+        document = self.load_document(self.load_response(url, REQUEST_HEADERS, TIMEOUT))
 
         if document is not None:
             pages = list()
@@ -40,7 +47,7 @@ class BatoExtractor(Extractor):
         return 1
 
     async def parse_search(self, url):
-        document = self.load_document(self.load_response(url))
+        document = self.load_document(self.load_response(url, REQUEST_HEADERS, TIMEOUT))
         results = dict()
 
         if document is not None:
@@ -64,11 +71,7 @@ class BatoExtractor(Extractor):
         return results
 
     async def parse_desc(self, url):
-        document = self.load_document(
-            self.load_response(
-                self.standardise_url(url)
-            )
-        )
+        document = self.load_document(self.load_response(url, REQUEST_HEADERS, TIMEOUT))
         results = SeriesResult()
 
         if document is not None:
@@ -102,7 +105,7 @@ class BatoExtractor(Extractor):
         return results
 
     async def parse_chapter(self, url):
-        document = self.load_document(self.load_response(url))
+        document = self.load_document(self.load_response(url, REQUEST_HEADERS, TIMEOUT))
 
         if document is not None:
             for script in document.xpath("//script/text()"):
