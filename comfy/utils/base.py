@@ -21,7 +21,7 @@ class Extractor:
     @staticmethod
     def load_response(url: str, header: dict, timeout: int, params: dict = {}):
         "Returns a Response from URL"
-        response = requests.get(url, header=header, params=params, timeout=timeout)
+        response = requests.get(url, headers=header, params=params, timeout=timeout)
 
         if response is None:
             print(f"NO RESPONSE RECEIVED WHEN LOADING '{url}'")
