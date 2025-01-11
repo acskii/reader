@@ -16,6 +16,7 @@ supported_websites = {
         'name': 'bato.to',
         'extractor':  BatoExtractor,
         'url_pattern': r"(?:https?://)?(?:(?:ba|d|h|m|w)to\.to|(?:(?:manga|read)toto|batocomic|[xz]bato)\.(?:com|net|org)|comiko\.(?:net|org)|bat(?:otoo|o?two)\.com)",
+        'logo': 'https://bato.to/amsta/img/batoto/favicon.ico?v0',
     },
     # '2': {
     #     'name': 'wattpad',
@@ -26,6 +27,7 @@ supported_websites = {
         'name': 'mangadex',
         'extractor':  MangaDexExtractor,
         'url_pattern': r"(?:https?://)?(?:www\.)?mangadex\.(?:org|cc)",
+        'logo': 'https://mangadex.org/img/brand/mangadex-logo.svg',
     },
 }
 
@@ -36,6 +38,14 @@ def determine_option(url: str):
             return option
 
     return None
+
+def get_supported_websites():
+    supported = {}
+
+    for index, info in supported_websites.items():
+        supported[index] = {'name': info['name'], 'logo': info['logo']}
+    
+    return supported
 
 def get_extractor(website_option: str):
     """Get extractor class of a website according to option number"""
