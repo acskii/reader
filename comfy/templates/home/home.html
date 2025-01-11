@@ -10,13 +10,52 @@
     hr {
         opacity: 1;
     }
+    img {
+        height: auto;
+        width: 100%;
+    }
+    strong {
+        color: white;
+    }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="container mt-3 p-2">
-    <h4 class="m-0">Collections</h4>
+<div class="container mt-3 mb-3">
+    <h4 class="m-0">Recently Visited</h4>
     <hr class="m-0 border border-info border-2 bg-info">
+    {% if visited %}
+        <form method="post" class="d-flex flex-row gap-2 p-3 flex-nowrap" style="overflow: auto;">
+            {% csrf_token %}
+            {% for visit in visited %}
+                <div class="flex-row flex-grow-0 flex-shrink-0 border rounded border-3 border-info">
+                    <img src="{{ visit.logo }}" class="card-img border border-3 border-top-0 border-start-0 border-end-0 border-info" alt="{{ visit.title }} logo" style="width: 300px">
+                    <div class="card-body d-flex flex-column gap-1 p-2 align-items-center" style="max-width: 300px;">
+                        <h5 class="card-title text-wrap">{{ visit.title }}</h5>
+                        <p class="m-0">Last visited: {{ visit.last_visited }}</p>
+                        <div class="badge mb-2 text-bg-info col p-1 ps-0 w-100">
+                            {% for op, info in supported.items %}
+                                {% if visit.website_option|stringformat:'i' == op %}
+                                    <img class="img-fluid bg-light border-2 rounded" style="min-width: 1.5em; max-width: 1.8em;" type="image"
+                                    alt="logo" src="{{ info.logo }}" />
+                                    <span>{{ info.name }}</span>
+                                {% endif %}
+                            {% endfor %}
+                          </div>
+                        <div class="d-flex flex-row gap-1 flex-shrink-0">
+                        {% if visit.series_url %}
+                            <button  type="submit" name="visit-series" value="{{ visit.series_url }}" class="btn btn-info"><strong>View Series</strong></button>
+                        {% endif %}
+
+                        {% if visit.preview_url %}
+                            <button  type="submit" name="visit-preview" value="{{ visit.preview_url }}" class="btn btn-info"><strong>Read {{ visit.last_read }}</strong></button>
+                        {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </form>
+    {% endif %}
 </div>
 
 <div class="container mt-3 p-2">
