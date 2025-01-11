@@ -1,0 +1,83 @@
+{% extends 'reader/base.html' %}
+<!-- {% load static %} -->
+{% block title %}Preview{% endblock %}
+{% block navbarContent %}
+<li class="nav-item">
+    <a class="nav-link link-light" href="{% url 'comfy:series' %}">Go to Series</a>
+</li>
+{% endblock %}
+{% block content %}
+{% if chapters %}
+<div class="w-100 text-center p-2" id="navigation">
+    <form method="post" class="flex-row d-inline-flex gap-2 justify-content-center align-items-center">
+        {% csrf_token %}
+        <select id="chapter-list" required name="nav_url" class="form-select col-6">
+            {% for chapter in chapters %}
+            <option value="{{ chapter.link }}" {% if chapter.link == current_chapter_url %} selected {% endif %}>
+                <div class="input-group flex-nowrap">
+                    <h2 class="form-control">{{ chapter.header }}</h2>
+                </div>
+            </option>
+            {% endfor %}
+        </select>
+        <button name="nav-select" type="submit" class="col-3 btn btn-outline-info"><strong>Select</strong></button>
+        <button type="submit" name="nav_url" {% if previous_url is None %} value=""
+            class="col-3 btn btn-outline-info disabled" {% else %} value="{{previous_url}}"
+            class="col-3 btn btn-outline-info" {% endif %}>
+            <strong>Previous</strong>
+        </button>
+        <button type="submit" name="nav_url" {% if next_url is None %} value=""
+            class="col-3 btn btn-outline-info disabled" {% else %} value="{{next_url}}"
+            class="col-3 btn btn-outline-info" {% endif %}>
+            <strong>Next</strong>
+        </button>
+    </form>
+</div>
+<div class="d-flex flex-column align-items-center align-content-center" id="chapter-content">
+    {% if content %}
+    {% if not content.novel %}
+    {% for page, src in content.pages.items %}
+    <div class="item">
+        <img style="width: 600px; visibility: visible !important;" src="{{ src }}" id="page-{{ page }}" />
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="w-75 mx-auto p-2 text-wrap">
+        {% for page, text in content.pages.items %}
+        <div class="item">
+            <p class="m-0" style="white-space: pre-wrap;" id="{{ page }}">{{ text }}</p>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endif %}
+    <div class="container d-flex" id="btm-control">
+        <div class="w-75 mx-auto flex-row text-center p-2 align-items-center justify-content-center">
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" name="nav_url" {% if previous_url is None %} value=""
+                    class="col-3 btn btn-outline-info disabled" {% else %} value="{{previous_url}}"
+                    class="col-3 btn btn-outline-info" {% endif %}>
+                    <strong>Previous</strong>
+                </button>
+                <button type="submit" name="nav_url" {% if next_url is None %} value=""
+                    class="col-3 btn btn-outline-info disabled" {% else %} value="{{next_url}}"
+                    class="col-3 btn btn-outline-info" {% endif %}>
+                    <strong>Next</strong>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+{% block independant %}
+<div class="sticky-md-bottom justify-content-end gap-1 d-flex flex-column mx-end mx-2">
+    <a class="btn btn-outline-info bottom-0" href="#top" style="width: 35px;">
+        ↑
+    </a>
+    <a class="btn btn-outline-info bottom-0" href="#bottom" style="width: 35px;">
+        ↓
+    </a>
+</div>
+{% endblock %}
