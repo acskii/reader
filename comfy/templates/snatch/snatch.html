@@ -1,0 +1,46 @@
+% extends 'reader/base.html' %}
+{% block title %}Snatch{% endblock %}
+{% block content %}
+<h2 class="text-center mx-auto mt-3">Snatch from URL</h2>
+  <div
+    class="container border border-info border-3 rounded"
+    style="width: 50%; margin-top: 30px; padding: 20px"
+    >
+        <form name="filters-form" method="POST">
+            {% csrf_token %}
+            <fieldset>
+                <div class="input-group mb-3">
+                    <input required type="text" class="form-control border border-info border-2 border-end-0"
+                        aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" name="url"
+                        placeholder="Series page url">
+                    <button type="submit" id="extract-button" class="btn btn-info input-group-text" name="home-extract-form">
+                        <strong style="color: #ffffff;">Extract</strong>
+                    </button>
+                </div>
+                {% if error %}
+                <span style="color: #ff0000;">{{ error }}</span>
+                {% endif %}
+            </fieldset>
+        </form>
+    </div>
+ <div
+    class="container border border-info border-3 rounded p-2"
+    style="width: 50%; margin-top: 30px;"
+    >
+     <h5 class="text-center"><u>Supported websites</u></h5>
+     <div class="overflow-auto h-25">
+        <ul>
+            {% for op, info in supported %}
+                <li class="list-group-item d-flex justify-content-between align-items-start">
+                    <span class="badge bg-info rounded-pill mt-1">{{ forloop.counter }}</span>
+                    <div class="badge mb-2 ms-2 me-auto fw-bold text-bg-info col p-1 ps-0 w-100">
+                        <img class="img-fluid bg-light border-2 rounded" style="min-width: 1.5em; max-width: 1.8em;" type="image"
+                        alt="logo" src="{{ info.logo }}" />
+                        <span>{{ info.name }}</span>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+     </div>
+ </div>
+{% endblock %}
