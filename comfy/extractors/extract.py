@@ -22,11 +22,11 @@ supported_websites = {
     #     'extractor':  WattpadExtractor,
     #     'url_pattern': r"https?://www\.wattpad\.com/story/\w+",
     # },
-    # '3': {
-    #     'name': 'mangadex',
-    #     'extractor':  MangaDexExtractor,
-    #     'url_pattern': r"(?:https?://)?(?:www\.)?mangadex\.(?:org|cc)",
-    # },
+    '2': {
+        'name': 'mangadex',
+        'extractor':  MangaDexExtractor,
+        'url_pattern': r"(?:https?://)?(?:www\.)?mangadex\.(?:org|cc)",
+    },
 }
 
 def determine_option(url: str):
