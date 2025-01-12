@@ -1,4 +1,4 @@
-% extends 'reader/base.html' %}
+{% extends 'reader/base.html' %}
 {% block title %}Snatch{% endblock %}
 {% block content %}
 <h2 class="text-center mx-auto mt-3">Snatch from URL</h2>
@@ -30,10 +30,10 @@
      <h5 class="text-center"><u>Supported websites</u></h5>
      <div class="overflow-auto h-25">
         <ul>
-            {% for op, info in supported %}
+            {% for op, info in supported.items %}
                 <li class="list-group-item d-flex justify-content-between align-items-start">
-                    <span class="badge bg-info rounded-pill mt-1">{{ forloop.counter }}</span>
-                    <div class="badge mb-2 ms-2 me-auto fw-bold text-bg-info col p-1 ps-0 w-100">
+                    <span class="badge bg-info rounded-pill mt-2">{{ forloop.counter }}</span>
+                    <div class="badge mb-2 ms-2 me-auto fw-bold text-bg-info col p-2 flex-grow-0">
                         <img class="img-fluid bg-light border-2 rounded" style="min-width: 1.5em; max-width: 1.8em;" type="image"
                         alt="logo" src="{{ info.logo }}" />
                         <span>{{ info.name }}</span>

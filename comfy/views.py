@@ -103,9 +103,9 @@ async def snatch_view(request):
                 await cache.aset(f'{username}-option', option, timeout=CACHE_TIMEOUT)
                 await cache.aset(f'{username}-series_url', typed_url.strip(), timeout=CACHE_TIMEOUT)
                 return redirect(reverse('comfy:series'))
-        return render(request, 'snatch/snatch.html', {'error': ERR_URL_WRONG})
+        return await sync_to_async(render)(request, 'snatch/snatch.html', {'error': ERR_URL_WRONG})
     else:
-        return render(request, 'snatch/snatch.html', {'supported': get_supported_websites()})
+        return await sync_to_async(render)(request, 'snatch/snatch.html', {'supported': get_supported_websites()})
 
 
 @login_required
