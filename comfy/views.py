@@ -7,7 +7,7 @@ from comfy.models import VisitHistory
 from asgiref.sync import sync_to_async
 import datetime
 from .extractors.extract import determine_option, get_supported_websites
-from .utils.scrape import scrape_info, scrape_chapter
+from .utils.scrape import scrape_info, scrape_chapter, scrape_results
 from .utils.cache import cached_scrape
 
 ERR_URL_WRONG = "URL entered is not recognised"
@@ -48,6 +48,7 @@ async def home_view(request):
                     await cache.aset(f'{username}-series_url', typed_url.strip(), timeout=CACHE_TIMEOUT)
                     return redirect(reverse('comfy:series'))
             return render(request, 'home/home.html', {'error': ERR_URL_WRONG})
+        
         elif 'visit-series' in request.POST:
             last_visited = await sync_to_async(VisitHistory.objects.all)()
             series_url = request.POST.get('visit-series', None)
@@ -73,7 +74,7 @@ async def home_view(request):
             if preview_url is not None:
                 async for visit in last_visited:
                     if visit.preview_url == preview_url:
-                        results = await cached_scrape(scrape_info, visit.website_option, visit.series_url)
+                        results = await cached_scrape(scrape_info, visit.website_option, url=visit.series_url)
                         print(visit.title)
                         if results is not None:
                             new_chapter_list = results.chapters
@@ -107,6 +108,46 @@ async def snatch_view(request):
     else:
         return await sync_to_async(render)(request, 'snatch/snatch.html', {'supported': get_supported_websites()})
 
+@login_required
+async def search_view(request):
+    if request.method == 'POST':
+        if ('website' in request.POST) and ('keywords' in request.POST):
+            # Do searching
+            username = await get_user_name(request)
+            option = request.POST.get('website')
+            keywords = request.POST.get('keywords')
+
+            # Get search results
+            # Cache results for faster retrieval
+            await cache.aset(f'{username}-soption', option, timeout=CACHE_TIMEOUT)
+            results = await cached_scrape(scrape_results, option, keywords=keywords, page=1)
+            # Render results
+
+            if results is not None:
+                print(results)
+                return await sync_to_async(render)(request, 'search/results.html', {'website_options': get_supported_websites(),
+                                                                                    'keywords': keywords,
+                                                                                    'website': option,
+                                                                                    'search_results': results})
+            else:
+                return await sync_to_async(render)(request, 'search/results.html', {'website_options': get_supported_websites(),
+                                                                                    'keywords': keywords,
+                                                                                    'website': option})
+        elif 'extract-result' in request.POST:
+            username = await get_user_name(request)
+            option = await cache.aget(f'{username}-soption')
+            series_url = request.POST.get('extract-result')
+
+            # Cache results
+            await cache.aset(f'{username}-option', option, timeout=CACHE_TIMEOUT)
+            await cache.aset(f'{username}-series_url', series_url, timeout=CACHE_TIMEOUT)
+
+            # Redirect
+            return redirect(reverse('comfy:series'))
+        
+        return await sync_to_async(render)(request, 'search/search.html', {'website_options': get_supported_websites()})
+    else:
+        return await sync_to_async(render)(request, 'search/search.html', {'website_options': get_supported_websites()})
 
 @login_required
 async def extract_view(request):
@@ -115,8 +156,9 @@ async def extract_view(request):
         option = await cache.aget(f'{username}-option')
         url = await cache.aget(f'{username}-series_url')
 
+        print(option, url)
         if (option is not None) and (url is not None):
-            results = await cached_scrape(scrape_info, option, url)
+            results = await cached_scrape(scrape_info, option, url=url)
 
             if results is not None:
                 # Cache chapter list for future preview use
@@ -197,7 +239,7 @@ async def preview_view(request):
         chapter_list = await cache.aget(f'{username}-current_chapter_list')
 
         if (option is not None) and (url is not None) and (chapter_list is not None):
-            results = await cached_scrape(scrape_chapter, option, url)
+            results = await cached_scrape(scrape_chapter, option, url=url)
             if results is not None:
                 # Getting navigation urls
                 prev_link, next_link = None, None
