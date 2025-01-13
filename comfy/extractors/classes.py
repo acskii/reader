@@ -46,7 +46,10 @@ class BatoExtractor(Extractor):
             return max(pages) if len(pages) > 1 else 1
         return 1
 
-    async def parse_search(self, url):
+    async def parse_search(self, keywords: str, page: int):
+        # Start in first page
+        url = self.search_page_url.replace(self.key_sep, keywords).replace(self.page_sep, str(page))
+
         document = self.load_document(self.load_response(url, REQUEST_HEADERS, TIMEOUT))
         results = dict()
 
@@ -54,11 +57,9 @@ class BatoExtractor(Extractor):
             for index, search_item in enumerate(document.xpath(
                     "//div[contains(@class, 'series') or contains(@id, 'series')]/div[contains(@class, 'item')][./a]")):
                 result = SearchResult()
-                result.icon = search_item.xpath("./a/img/@src")[0]
+                result.thumbnail = search_item.xpath("./a/img/@src")[0]
                 result.link = f"{self.home_page_url}{search_item.xpath('./a/@href')[0]}"
-                result.title = search_item.xpath(".//div[contains(@class, 'item')]/a[contains(@class, 'title')]")[
-                    0].text_content()
-
+                result.title = search_item.xpath(".//div[contains(@class, 'item')]/a[contains(@class, 'title')]")[0].text_content()
                 for container in search_item.xpath(".//div[contains(@class, 'item')][./span or ./u or ./b]"):
                     result.add_info(
                         InfoNode(
@@ -142,12 +143,11 @@ class MangaDexExtractor(Extractor):
         else:
             return None
 
-    async def parse_search(self, url):
-        url = self.standardise_url(url)
+    async def parse_search(self, keywords, page):
         results = dict()
 
         # API Calls babbbbyyyy :)
-        for index, detail in enumerate(self.load_response(f"{self.api_call_url}/manga", params={"title": url, "limit": 20, "includes[]": "cover_art"}).json()["data"]):
+        for index, detail in enumerate(self.load_response(f"{self.api_call_url}/manga", REQUEST_HEADERS, TIMEOUT, params={"title": keywords, "limit": 20*page, "includes[]": "cover_art"}).json()["data"]):
             result = SearchResult()
             attrs = detail['attributes']
             result.title = attrs['title']['en']
@@ -165,10 +165,10 @@ class MangaDexExtractor(Extractor):
             tags.extend([tag['attributes']['name'].get('en', '') for tag in attrs['tags']])
             result.add_info(InfoNode(tags))
             # Description
-            result.add_info(InfoNode([attrs['description'].get('en', '')]))
+            result.summary = attrs['description'].get('en', '')
 
-            result.icon = f"{self.api_cover_url}/{detail['id']}/{[r['attributes']['fileName'] for r in detail['relationships'] if r['type'] == 'cover_art'][0]}.{256}.jpg"
-            result.link = detail['id']
+            result.thumbnail = f"{self.api_cover_url}/{detail['id']}/{[r['attributes']['fileName'] for r in detail['relationships'] if r['type'] == 'cover_art'][0]}.{256}.jpg"
+            result.link = f"{self.home_page_url}/title/{detail['id']}/"
 
             results[index] = result
 
