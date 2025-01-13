@@ -1,0 +1,50 @@
+{% extends 'reader/base.html' %}
+{% block styles %}
+<style>
+    hr {
+        opacity: 1;
+    }
+    strong {
+        color: white;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<h2 class="text-center mt-3">Search</h2>
+<div class="container border border-info border-3 rounded" style="width: 50%; margin-top: 30px; padding: 20px">
+    <form name="search-form" method="POST">
+        {% csrf_token %}
+        <fieldset>
+            <h5 for="website" class="form-label">Select website:</h5>
+            <div class="mb-3 border border-info rounded">
+                <select required name="website" class="form-select">
+                    {% for op, info in website_options.items %}
+                    <option value="{{ op }}" {% if op == option %} selected {% endif %}> <!--herer-->
+                        <div class="input-group flex-nowrap">
+                            <h2 class="form-control">{{ info.name }}</h2>
+                        </div>
+                    </option>   
+                    {% endfor %}
+                </select>
+            </div>
+        </fieldset>
+        <fieldset>
+            <h5 for="keywords" class="form-label">Search for:</h5>
+            <div class="input-group mb-2">
+                <span class="input-group-text">Keywords</span>
+                <input required type="text" class="form-control" aria-label="Sizing example input"
+                    aria-describedby="inputGroup-sizing-default" name="keywords" placeholder="Search keywords" 
+                    {% if keywords %} 
+                    value="{{ keywords }}" 
+                    {% endif %}>
+                <button type="submit" id="search-button" class="input-group-text btn btn-info float-end">
+                    <span id="load-spin" class="d-none spinner-border spinner-border-sm" role="status"
+                        aria-hidden="true"></span>
+                    <strong>Search</strong>
+                </button>
+            </div>
+        </fieldset>
+    </form>
+</div>
+{% block results %}{% endblock %}
+{% endblock %}

@@ -3,6 +3,9 @@
     <li class="nav-item">
         <a class="nav-link active link-light" aria-current="page" href="{% url 'comfy:snatch' %}">Snatch</a>
     </li>
+    <li class="nav-item">
+        <a class="nav-link active link-light" aria-current="page" href="{% url 'comfy:search' %}">Search</a>
+    </li>
 {% endblock %}
 
 {% block styles %}
@@ -21,6 +24,34 @@
 {% endblock %}
 
 {% block content %}
+<!-- <div class="container mt-3 p-2">
+    <form name="home-search-form" method="POST">
+        {% csrf_token %}
+        <div class="border border-info border-bottom-0 rounded" style="margin-right: 5rem;">
+            <select required name="website" class="form-select">
+                {% for op, info in supported.items %}
+                <option value="{{ op }}">
+                    <h2 class="form-control">{{ info.name }}</h2>
+                </option>   
+                {% endfor %}
+            </select>
+        </div>
+        <div class="input-group mb-3">
+            <input required type="text" class="form-control border border-info border-2"
+                aria-describedby="inputGroup-sizing-default" name="keywords" placeholder="Search keywords">
+                   
+            <button type="submit" id="search-button" class="input-group-text btn btn-info float-end">
+                <span id="load-spin" class="d-none spinner-border spinner-border-sm" role="status"
+                    aria-hidden="true"></span>
+                <strong>Search</strong>
+            </button>
+        </div>
+        {% if error %}
+        <span style="color: #ff0000;">{{ error }}</span>
+        {% endif %}
+    </form>
+</div> -->
+
 <div class="container mt-3 mb-3">
     <h4 class="m-0">Recently Visited</h4>
     <hr class="m-0 border border-info border-2 bg-info">
@@ -67,7 +98,7 @@
             <fieldset>
                 <div class="input-group mb-3">
                     <input required type="text" class="form-control border border-info border-2 border-end-0"
-                        aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" name="url"
+                        aria-describedby="inputGroup-sizing-default" name="url"
                         placeholder="Series page url">
                     <button type="submit" id="extract-button" class="btn btn-info input-group-text" name="home-extract-form">
                         <strong style="color: #ffffff;">Extract</strong>
