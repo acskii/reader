@@ -9,10 +9,17 @@ def convert_to_task_id(website_option: str, url: str):
     # Return unique identifier of hex string
     return str(uuid.UUID(hex=hex_string))
 
-async def cached_scrape(func, option: str, url: str):
+async def cached_scrape(func, option: str, **kwargs):
     # Wraps around the normal scrape function, adding the element of caching
     # Needs REDIS server ideally as cache are large in size
-    task_id = convert_to_task_id(option, url)
+    url = kwargs.get('url')
+    keywords = kwargs.get('keywords')
+    page = kwargs.get('page')
+
+    if (url is not None):
+        task_id = convert_to_task_id(option, url)
+    elif (keywords is not None) and (page is not None):
+        task_id = convert_to_task_id(option, f"{keywords}-page{page}")
 
     cached = await cache.aget(task_id)
 
@@ -20,8 +27,11 @@ async def cached_scrape(func, option: str, url: str):
         return cached
     else:
         try:
-            result = await func(option, url)
-            
+            if (url is not None):
+                result = await func(option, url)
+            elif (keywords is not None) and (page is not None):
+                result = await func(option, keywords, page)
+
             if result is not None:
                 await cache.aset(task_id, result, timeout=TIMEOUT)
                 return result
