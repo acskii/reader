@@ -1,5 +1,5 @@
 # comfy reader
-'An app that contains manga and stories from my sources in one place!'
+`An app that contains manga and stories from my sources in one place!`
 
 ## Table of Contents
 - **<h3><a href="#introduction">Introduction</a></h3>**
@@ -179,14 +179,14 @@ $ source [name-of-env-here]/bin/activate
             }
         }
         ```
+         
+    - **Internationalization**
+
+      Edit the `TIME_ZONE` variable into your prefered timezone.
+
 >[!IMPORTANT]
 >**DON'T** use browser cache/cookies, as cache data is larger than the maximum limit of **>4KB**\
 >Redis was the solution to this problem.
-
-    
-    - **Internationalization**
-
-        Edit the `TIME_ZONE` variable into your prefered timezone.
 
 <h4>You are now ready to <a href="#running">run</a> the application!</h4>
 
