@@ -179,9 +179,9 @@ $ source [name-of-env-here]/bin/activate
             }
         }
         ```
-        >[!IMPORTANT]
-        >**DON'T** use browser cache/cookies, as cache data is larger than the maximum limit of **>4KB**\
-        >Redis was the solution to this problem.
+>[!IMPORTANT]
+>**DON'T** use browser cache/cookies, as cache data is larger than the maximum limit of **>4KB**\
+>Redis was the solution to this problem.
 
     
     - **Internationalization**
